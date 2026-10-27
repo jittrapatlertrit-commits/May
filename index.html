@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Math Geometry Adventure: ผจญภัยอาณาจักรสามมิติ</title>
+<style>
+:root{--pink:#ff8fc2;--pink-l:#ffe0ee;--sky:#7cc8fb;--sky-l:#dff3ff;--purple:#a58cf5;--purple-l:#ece6ff;--yellow:#ffe27a;--yellow-l:#fff6cf;--ink:#4b3b73;--ok:#2fb36b;--ok-l:#dcf7e8;--no:#ff8a6b;--no-l:#ffe8e1}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Noto Sans Thai','Sarabun','Prompt','Tahoma',system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,#ffe9f3 0%,#e6f4ff 50%,#efe9ff 100%) fixed;min-height:100vh;font-size:18px;line-height:1.55}
+body::before,body::after{content:"";position:fixed;border-radius:50%;z-index:0;pointer-events:none}
+body::before{width:260px;height:260px;left:-80px;top:120px;background:radial-gradient(circle,#ffd1e6 0%,transparent 70%)}
+body::after{width:320px;height:320px;right:-100px;bottom:40px;background:radial-gradient(circle,#cdbfff 0%,transparent 70%)}
+.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:14px 14px 60px}
+h1,h2,h3,h4{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{border:0;border-radius:18px;padding:12px 22px;font-weight:700;font-size:1.02rem;background:var(--purple);color:#fff;box-shadow:0 5px 0 #7d63d6;transition:transform .08s,box-shadow .08s;min-height:50px}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #7d63d6}
+.btn.pink{background:var(--pink);box-shadow:0 5px 0 #e0679f}
+.btn.pink:active{box-shadow:0 1px 0 #e0679f}
+.btn.sky{background:var(--sky);box-shadow:0 5px 0 #4aa6e0;color:#1d3f66}
+.btn.sky:active{box-shadow:0 1px 0 #4aa6e0}
+.btn.yellow{background:var(--yellow);box-shadow:0 5px 0 #e0b93a;color:#5b4300}
+.btn.yellow:active{box-shadow:0 1px 0 #e0b93a}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 4px 0 #d9d0f5;border:2px solid #e2dbfa}
+.btn.big{font-size:1.2rem;padding:14px 30px;min-height:58px}
+.btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:0 5px 0 #b9b0d6}
+.card{background:#fff;border-radius:26px;box-shadow:0 8px 24px rgba(120,90,200,.15);padding:20px}
+.row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center}
+.bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px}
+.bar .btn{padding:8px 14px;min-height:42px;font-size:.95rem;box-shadow:0 3px 0 #d9d0f5}
+.brand{font-weight:800;color:#8a6ee0}
+/* home */
+.hero{text-align:center;padding:18px 8px 6px}
+.hero h1{font-size:clamp(1.7rem,5vw,2.7rem);line-height:1.15;background:linear-gradient(90deg,#ff6fae,#8a6ee0,#44a9ec);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
+.hero .sub{font-size:clamp(1.15rem,3.5vw,1.6rem);font-weight:700;margin:6px 0 4px}
+.mascots{display:flex;justify-content:center;gap:6px;margin-bottom:6px}
+.mascots .mascot{width:clamp(80px,22vw,128px);height:auto}
+.mascot{animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(120,90,200,.25))}
+.mascots .mascot:nth-child(2){animation-delay:.5s}
+.mascots .mascot:nth-child(3){animation-delay:1s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:18px 0}
+.lv{text-align:center;position:relative;overflow:hidden}
+.lv .mascot{width:92px;height:92px}
+.lv .no{display:inline-block;background:var(--yellow);color:#5b4300;border-radius:99px;padding:2px 14px;font-weight:800;font-size:.9rem}
+.lv h3{font-size:1.28rem;margin:6px 0 2px}
+.lv p{margin:0 0 8px;font-size:.95rem;opacity:.85}
+.lv .best{font-weight:700;margin-bottom:10px;min-height:1.6em}
+.lv.c0{background:linear-gradient(180deg,#fff,#ffeef6)}
+.lv.c1{background:linear-gradient(180deg,#fff,#e9f6ff)}
+.lv.c2{background:linear-gradient(180deg,#fff,#f1ecff)}
+.tiny{font-size:.9rem;opacity:.85}
+/* quiz */
+.prog{height:16px;background:#fff;border-radius:99px;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.08)}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--purple),var(--sky));border-radius:99px;transition:width .4s}
+.meta{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;margin:10px 0}
+.chip{background:#fff;border-radius:99px;padding:4px 14px;font-weight:800;box-shadow:0 3px 8px rgba(120,90,200,.12)}
+.d-easy{background:#d9f7e6;color:#16724a}.d-med{background:#fff0c2;color:#8a5b00}.d-hard{background:#ffdbe5;color:#a1244f}
+.qgrid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:760px){.qgrid.hasfig{grid-template-columns:1.25fr 1fr;align-items:center}}
+.qtext{font-size:1.2rem;font-weight:600}
+.fig{background:linear-gradient(180deg,#f6f1ff,#eaf6ff);border-radius:20px;padding:6px;text-align:center}
+.fig svg{width:100%;max-width:330px;height:auto}
+.lb{font-size:14.5px;font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.opts{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0}
+@media(min-width:620px){.opts{grid-template-columns:1fr 1fr}}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:3px solid #e2dbfa;border-radius:20px;padding:12px 14px;font-size:1.15rem;font-weight:700;box-shadow:0 4px 0 #e2dbfa;min-height:64px;position:relative;transition:transform .1s}
+.opt:hover:not([disabled]){transform:translateY(-2px);border-color:var(--purple)}
+.opt .lt{flex:none;width:38px;height:38px;border-radius:50%;background:var(--purple-l);display:grid;place-items:center;font-weight:800;color:#6a4fc9}
+.opt small{font-weight:600;opacity:.8}
+.opt.sel{border-color:var(--purple);background:var(--purple-l);box-shadow:0 4px 0 #b9a6f2}
+.opt.sel .lt{background:var(--purple);color:#fff}
+.opt.right{border-color:var(--ok);background:var(--ok-l);box-shadow:0 4px 0 #8fdcb2}
+.opt.right .lt{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--no);background:var(--no-l);box-shadow:0 4px 0 #ffc2b3}
+.opt.wrong .lt{background:var(--no);color:#fff}
+.opt[disabled]{cursor:default}
+.mk{position:absolute;right:14px;font-size:1.5rem;font-weight:800}
+.right .mk{color:var(--ok)}.wrong .mk{color:var(--no)}
+.fb{border-radius:24px;padding:16px;margin-top:6px;animation:pop .35s}
+.fb.good{background:var(--ok-l);border:3px solid #9be3bd}
+.fb.soft{background:#fff4e0;border:3px solid #ffd59a}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:none;opacity:1}}
+.fbhead{display:flex;gap:12px;align-items:center}
+.fbhead .mascot{width:72px;height:72px;flex:none}
+.fb h4{margin:12px 0 4px}
+.fb ol{margin:0 0 12px;padding-left:24px}
+.fb li{margin:5px 0}
+/* summary */
+.sum{text-align:center}
+.stars{font-size:3rem;letter-spacing:6px}
+.stars span{display:inline-block;animation:starpop .6s both}
+.stars span:nth-child(2){animation-delay:.2s}.stars span:nth-child(3){animation-delay:.4s}
+@keyframes starpop{from{transform:scale(0) rotate(-90deg)}to{transform:none}}
+.score{font-size:3.4rem;font-weight:800;color:#8a6ee0;line-height:1.1}
+.stat{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.stat div{background:var(--purple-l);border-radius:18px;padding:8px 18px;font-weight:800}
+.stat .g{background:var(--ok-l);color:#16724a}.stat .r{background:var(--no-l);color:#a14022}
+.rv{text-align:left;margin-top:18px}
+.rv details{background:#fff;border-radius:18px;margin:10px 0;padding:10px 14px;box-shadow:0 3px 10px rgba(120,90,200,.12)}
+.rv summary{cursor:pointer;font-weight:700}
+.rv .ok{color:var(--ok)}.rv .no{color:#e0603f}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(60,40,110,.45);display:flex;align-items:center;justify-content:center;padding:14px;z-index:50}
+.modal.hidden{display:none}
+.mbox{background:#fff;border-radius:26px;max-width:640px;width:100%;max-height:88vh;overflow:auto;padding:20px}
+.mbox h3{margin-bottom:8px}
+.mbox h4{margin:14px 0 4px;color:#8a6ee0}
+.mbox .f{background:var(--purple-l);border-radius:14px;padding:6px 12px;margin:6px 0}
+.hidden{display:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<noscript>กรุณาเปิดใช้งาน JavaScript เพื่อเล่นเกม</noscript>
+<div class="wrap">
+  <div id="bar"></div>
+  <div id="screen"></div>
+</div>
+<div id="modal" class="modal hidden"><div class="mbox" id="mbox"></div></div>
+
+<script>
+'use strict';
+/* =====================================================
+   ส่วนที่ 1: ตรรกะโจทย์ (ไม่พึ่งหน้าจอ) — สุ่มโจทย์, คำนวณเฉลย, ตรวจสอบ
+   π = 3.14 | ปัดเศษคำตอบสุดท้ายเป็นทศนิยม 2 ตำแหน่ง
+   ===================================================== */
+const PI=3.14;
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const r2=x=>Math.round((x+1e-9)*100)/100;
+const fmt=x=>{x=r2(x);return Number.isInteger(x)?x.toLocaleString('en-US'):x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});};
+const E=x=>(Math.abs(x*100-Math.round(x*100))<1e-6?'= ':'≈ ')+fmt(x);
+
+/* ชุดสามเหลี่ยมมุมฉากจำนวนเต็ม ทำให้ความสูงตั้งฉาก ความสูงเอียง รัศมี สอดคล้องกันเสมอ */
+const TR=[[3,4,5],[5,12,13],[8,15,17],[7,24,25]];
+function triple(maxLeg){
+  for(let g=0;g<300;g++){
+    const t=pick(TR),kmax=t[2]<=5?4:t[2]<=13?2:1,k=ri(1,kmax);
+    let [x,y,z]=t.map(v=>v*k);
+    if(Math.random()<.5)[x,y]=[y,x];
+    if(x<=maxLeg)return [x,y,z];
+  }
+  return [3,4,5];
+}
+function pyrDims(maxM=12){const [m,h,l]=triple(maxM);return{m,a:2*m,h,l};}
+function coneDims(maxR=12){const [r,h,l]=triple(maxR);return{r,h,l};}
+function stepsPyr(a,h,l,u){const m=a/2;return[
+  `ครึ่งหนึ่งของด้านฐาน = ${a} ÷ 2 = ${m} ${u}`,
+  `ความสูงเอียง ℓ² = h² + (a/2)² = ${h}² + ${m}² = ${h*h} + ${m*m} = ${h*h+m*m}`,
+  `ℓ = √${h*h+m*m} = ${l} ${u}`];}
+function stepsCone(r,h,l,u){return[
+  `ความสูงเอียง ℓ² = r² + h² = ${r}² + ${h}² = ${r*r} + ${h*h} = ${r*r+h*h}`,
+  `ℓ = √${r*r+h*h} = ${l} ${u}`];}
+
+/* ---------- พีระมิด ---------- */
+const PYR={easy:[
+ ()=>{const B=ri(10,60),h=3*ri(2,8),ans=B*h/3;return{kind:'pE1',p:{B,h},unit:'ซม.³',ans,
+  text:`พีระมิดฐานสี่เหลี่ยมรูปหนึ่งมีพื้นที่ฐาน ${B} ซม.² และสูงตั้งฉาก ${h} ซม. จงหาปริมาตรของพีระมิดนี้`,
+  fig:{t:'pyr',h:h+' ซม.'},
+  steps:[`สูตร: V = ⅓ × พื้นที่ฐาน × ความสูงตั้งฉาก`,`แทนค่า: V = ⅓ × ${B} × ${h}`,`คำนวณ: V = ${fmt(B*h)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[B*h,B*h/2,B*h*3,B+h]};},
+ ()=>{const a=ri(3,12),h=ri(4,15),B=a*a,ans=B*h/3;return{kind:'pE2',p:{a,h},unit:'ซม.³',ans,
+  text:`พีระมิดฐานสี่เหลี่ยมจัตุรัส ด้านฐานยาวด้านละ ${a} ซม. สูงตั้งฉาก ${h} ซม. จงหาปริมาตร`,
+  fig:{t:'pyr',a:a+' ซม.',h:h+' ซม.'},
+  steps:[`พื้นที่ฐาน = ${a} × ${a} = ${B} ซม.²`,`สูตร: V = ⅓ × พื้นที่ฐาน × ความสูงตั้งฉาก`,`แทนค่า: V = ⅓ × ${B} × ${h} = ${fmt(B*h)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[B*h,a*h/3,B*h/2,a*h]};},
+ ()=>{const B=3*ri(4,20),h=ri(4,14),V=B*h/3;return{kind:'pE3',p:{B,V,h},unit:'ซม.',ans:h,
+  text:`พีระมิดฐานสี่เหลี่ยมมีพื้นที่ฐาน ${B} ซม.² และมีปริมาตร ${V} ลูกบาศก์เซนติเมตร จงหาความสูงตั้งฉากของพีระมิด`,
+  fig:{t:'pyr',h:'h = ?'},
+  steps:[`จากสูตร V = ⅓ × พื้นที่ฐาน × h จะได้ h = (3 × V) ÷ พื้นที่ฐาน`,`แทนค่า: h = (3 × ${V}) ÷ ${B} = ${3*V} ÷ ${B} ${E(h)} ซม.`],
+  wrongs:[V/B,B*V/3,2*h,3*V*B]};},
+ ()=>{const a=ri(3,14),l=ri(Math.floor(a/2)+2,18),ans=a*l/2;return{kind:'pE4',p:{a,l},unit:'ซม.²',ans,
+  text:`พีระมิดฐานสี่เหลี่ยมจัตุรัส ด้านฐานยาว ${a} ซม. ความสูงเอียงของหน้าข้าง (ความสูงของสามเหลี่ยมหน้าข้าง) ยาว ${l} ซม. จงหาพื้นที่ของหน้าข้าง 1 หน้า`,
+  fig:{t:'pyr',a:a+' ซม.',l:l+' ซม.'},
+  steps:[`หน้าข้าง 1 หน้าเป็นรูปสามเหลี่ยม ฐานยาว ${a} ซม. สูง ${l} ซม.`,`พื้นที่ = ½ × ฐาน × สูง = ½ × ${a} × ${l} ${E(ans)} ซม.²`],
+  wrongs:[a*l,2*a*l,a*a,a*a/2]};}
+],medium:[
+ ()=>{const w=ri(3,10),len=ri(w+1,16),h=ri(4,15),ans=w*len*h/3;return{kind:'pM1',p:{w,len,h},unit:'ซม.³',ans,
+  text:`พีระมิดฐานสี่เหลี่ยมมุมฉาก กว้าง ${w} ซม. ยาว ${len} ซม. สูงตั้งฉาก ${h} ซม. จงหาปริมาตร`,
+  fig:{t:'pyr',a:`${w}×${len} ซม.`,h:h+' ซม.'},
+  steps:[`พื้นที่ฐาน = กว้าง × ยาว = ${w} × ${len} = ${w*len} ซม.²`,`V = ⅓ × พื้นที่ฐาน × สูง = ⅓ × ${w*len} × ${h}`,`V = ${fmt(w*len*h)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[w*len*h,(w+len)*h/3,w*len*h/2,2*(w+len)*h/3]};},
+ ()=>{const d=pyrDims(),{a,h,l}=d,ans=2*a*l;return{kind:'pM2',p:{a,h,l},unit:'ซม.²',ans,
+  text:`พีระมิดฐานสี่เหลี่ยมจัตุรัส ด้านฐานยาว ${a} ซม. ความสูงเอียงของหน้าข้างยาว ${l} ซม. จงหาพื้นที่ผิวข้างรวมทั้ง 4 หน้า (ไม่รวมฐาน)`,
+  fig:{t:'pyr',a:a+' ซม.',l:l+' ซม.'},
+  steps:[`หน้าข้าง 1 หน้า = ½ × ${a} × ${l} = ${fmt(a*l/2)} ซม.²`,`มีหน้าข้าง 4 หน้า: 4 × ${fmt(a*l/2)} ${E(ans)} ซม.²`],
+  wrongs:[a*l/2,a*l,a*a+2*a*l,4*a*h]};},
+ ()=>{const d=pyrDims(),{a,h,l}=d,ans=a*a+2*a*l;return{kind:'pM3',p:{a,h,l},unit:'ซม.²',ans,
+  text:`พีระมิดฐานสี่เหลี่ยมจัตุรัส ด้านฐานยาว ${a} ซม. ความสูงเอียงของหน้าข้างยาว ${l} ซม. จงหาพื้นที่ผิวทั้งหมดของพีระมิด`,
+  fig:{t:'pyr',a:a+' ซม.',l:l+' ซม.'},
+  steps:[`พื้นที่ฐาน = ${a} × ${a} = ${a*a} ซม.²`,`พื้นที่หน้าข้าง 4 หน้า = 4 × ½ × ${a} × ${l} = ${2*a*l} ซม.²`,`พื้นที่ผิวทั้งหมด = พื้นที่ฐาน + พื้นที่หน้าข้างทุกหน้า = ${a*a} + ${2*a*l} ${E(ans)} ซม.²`],
+  wrongs:[2*a*l,a*a+a*l,a*a+4*a*l,a*a+2*a*h]};},
+ ()=>{const d=pyrDims(),{a,h,l}=d;return{kind:'pM4',p:{a,h,l},unit:'ซม.',ans:l,
+  text:`พีระมิดฐานสี่เหลี่ยมจัตุรัส ด้านฐานยาว ${a} ซม. สูงตั้งฉาก ${h} ซม. จงหาความสูงเอียงของหน้าข้าง`,
+  fig:{t:'pyr',a:a+' ซม.',h:h+' ซม.',l:'ℓ = ?'},
+  steps:stepsPyr(a,h,l,'ซม.'),
+  wrongs:[h+a/2,Math.sqrt(h*h+a*a),l*l,Math.sqrt(Math.abs(h*h-a*a/4))]};},
+ ()=>{const d=pyrDims(10),{a,h,l}=d,ans=a*a*h/3;return{kind:'pM5',p:{a,h},unit:'ม.³',ans,
+  text:`น้องพีระมิดสร้างเต็นท์ทรงพีระมิดฐานสี่เหลี่ยมจัตุรัส ด้านฐานยาว ${a} เมตร เสากลางตั้งฉากสูง ${h} เมตร อยากทราบว่ามีปริมาตรอากาศภายในเต็นท์กี่ลูกบาศก์เมตร`,
+  fig:{t:'pyr',a:a+' ม.',h:h+' ม.'},
+  steps:[`พื้นที่ฐาน = ${a} × ${a} = ${a*a} ม.²`,`V = ⅓ × ${a*a} × ${h} = ${fmt(a*a*h)} ÷ 3 ${E(ans)} ม.³`],
+  wrongs:[a*a*h,a*h/3,a*a*h/2,(a*a+2*a*d.l)*h/3]};}
+],hard:[
+ ()=>{const d=pyrDims(),{a,h,l}=d,ans=a*a+2*a*l;return{kind:'pH1',p:{a,h,l},unit:'ซม.²',ans,
+  text:`พีระมิดฐานสี่เหลี่ยมจัตุรัส ด้านฐานยาว ${a} ซม. สูงตั้งฉาก ${h} ซม. จงหาพื้นที่ผิวทั้งหมดของพีระมิด`,
+  fig:{t:'pyr',a:a+' ซม.',h:h+' ซม.'},
+  steps:[...stepsPyr(a,h,l,'ซม.'),`พื้นที่ฐาน = ${a} × ${a} = ${a*a} ซม.²`,`พื้นที่หน้าข้าง 4 หน้า = 4 × ½ × ${a} × ${l} = ${2*a*l} ซม.²`,`พื้นที่ผิวทั้งหมด = ${a*a} + ${2*a*l} ${E(ans)} ซม.²`],
+  wrongs:[a*a+2*a*h,2*a*l,a*a+a*l,a*a+4*a*l]};},
+ ()=>{const d=pyrDims(),{a,h,l}=d,ans=a*a*h/3;return{kind:'pH2',p:{a,h,l},unit:'ซม.³',ans,
+  text:`พีระมิดฐานสี่เหลี่ยมจัตุรัส ด้านฐานยาว ${a} ซม. ความสูงเอียงของหน้าข้างยาว ${l} ซม. จงหาปริมาตรของพีระมิด`,
+  fig:{t:'pyr',a:a+' ซม.',l:l+' ซม.',h:'h = ?'},
+  steps:[`ครึ่งหนึ่งของด้านฐาน = ${a} ÷ 2 = ${a/2} ซม.`,`ความสูงตั้งฉาก h² = ℓ² − (a/2)² = ${l}² − ${a/2}² = ${l*l} − ${a*a/4} = ${h*h}`,`h = √${h*h} = ${h} ซม.`,`V = ⅓ × ${a*a} × ${h} = ${fmt(a*a*h)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[a*a*l/3,a*a*h,a*h/3,a*a*h/2]};},
+ ()=>{const d=pyrDims(8),{a,h,l}=d,price=pick([40,50,60,80,100,120,150]),lat=2*a*l,ans=lat*price;return{kind:'pH3',p:{a,h,l,price},unit:'บาท',ans,
+  text:`หลังคาทรงพีระมิดฐานสี่เหลี่ยมจัตุรัส ด้านฐานยาว ${a} เมตร สูงตั้งฉาก ${h} เมตร ต้องการทาสีเฉพาะผิวข้างทั้ง 4 หน้า ราคาทาสีตารางเมตรละ ${price} บาท จะต้องจ่ายค่าทาสีกี่บาท`,
+  fig:{t:'pyr',a:a+' ม.',h:h+' ม.'},
+  steps:[...stepsPyr(a,h,l,'ม.'),`พื้นที่ผิวข้าง 4 หน้า = 4 × ½ × ${a} × ${l} = ${lat} ม.²`,`ค่าทาสี = ${lat} × ${price} ${E(ans)} บาท`],
+  wrongs:[(a*a+lat)*price,2*a*h*price,lat,lat*price/2]};},
+ ()=>{const a=ri(3,12),h=3*ri(2,6),V=a*a*h/3;return{kind:'pH4',p:{V,h},unit:'ซม.',ans:a,
+  text:`พีระมิดฐานสี่เหลี่ยมจัตุรัสมีปริมาตร ${V} ลูกบาศก์เซนติเมตร และสูงตั้งฉาก ${h} ซม. จงหาความยาวด้านของฐาน`,
+  fig:{t:'pyr',h:h+' ซม.',a:'a = ?'},
+  steps:[`จาก V = ⅓ × a² × h จะได้ a² = (3 × V) ÷ h`,`a² = (3 × ${V}) ÷ ${h} = ${3*V} ÷ ${h} = ${a*a}`,`a = √${a*a} ${E(a)} ซม.`],
+  wrongs:[a*a,Math.sqrt(V/h),V/h,2*a]};}
+]};
+
+/* ---------- กรวย ---------- */
+const CONE={easy:[
+ ()=>{const r=ri(2,9),h=3*ri(1,6),ans=PI*r*r*h/3;return{kind:'cE1',p:{r,h},unit:'ซม.³',ans,
+  text:`กรวยรูปหนึ่งมีรัศมีฐานยาว ${r} ซม. สูงตั้งฉาก ${h} ซม. จงหาปริมาตรของกรวย (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',r:r+' ซม.',h:h+' ซม.'},
+  steps:[`สูตร: V = ⅓πr²h`,`แทนค่า: V = ⅓ × 3.14 × ${r}² × ${h} = ⅓ × 3.14 × ${r*r} × ${h}`,`V = ${fmt(PI*r*r*h)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[PI*r*r*h,PI*r*h/3,PI*r*r*h/2,4*PI*r*r*h/3]};},
+ ()=>{const r=ri(2,12),ans=PI*r*r;return{kind:'cE2',p:{r},unit:'ซม.²',ans,
+  text:`กรวยรูปหนึ่งมีรัศมีฐานยาว ${r} ซม. จงหาพื้นที่ฐานของกรวย (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',r:r+' ซม.'},
+  steps:[`ฐานของกรวยเป็นวงกลม: พื้นที่ = πr²`,`แทนค่า: 3.14 × ${r}² = 3.14 × ${r*r} ${E(ans)} ซม.²`],
+  wrongs:[2*PI*r,PI*r,PI*r*r*r,PI*r*r/2]};},
+ ()=>{const d=coneDims(),{r,h,l}=d,ans=PI*r*r+PI*r*l;return{kind:'cE3',p:{r,h,l},unit:'ซม.²',ans,
+  text:`กรวยรูปหนึ่งมีรัศมีฐานยาว ${r} ซม. และความยาวเส้นสูงเอียงบนผิวกรวย ${l} ซม. จงหาพื้นที่ผิวทั้งหมดของกรวย (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',r:r+' ซม.',l:l+' ซม.'},
+  steps:[`สูตร: พื้นที่ผิวทั้งหมด = πr² + πrℓ`,`πr² = 3.14 × ${r*r} ${E(PI*r*r)} ซม.²`,`πrℓ = 3.14 × ${r} × ${l} ${E(PI*r*l)} ซม.²`,`รวม = ${fmt(PI*r*r)} + ${fmt(PI*r*l)} ${E(ans)} ซม.²`],
+  wrongs:[PI*r*l,PI*r*r,PI*r*r+PI*r*h,2*PI*r*(r+l)]};},
+ ()=>{const d=coneDims(),{r,h,l}=d;return{kind:'cE4',p:{r,h,l},unit:'ซม.',ans:l,
+  text:`กรวยรูปหนึ่งมีรัศมีฐานยาว ${r} ซม. สูงตั้งฉาก ${h} ซม. จงหาความยาวเส้นสูงเอียง ℓ ของกรวย`,
+  fig:{t:'cone',r:r+' ซม.',h:h+' ซม.',l:'ℓ = ?'},
+  steps:stepsCone(r,h,l,'ซม.'),
+  wrongs:[r+h,l*l,Math.sqrt(Math.abs(h*h-r*r)),Math.sqrt(r*r+h*h)+1]};}
+],medium:[
+ ()=>{const r=ri(2,8),d=2*r,h=ri(4,14),ans=PI*r*r*h/3;return{kind:'cM1',p:{d,h},unit:'ซม.³',ans,
+  text:`กรวยรูปหนึ่งมีเส้นผ่านศูนย์กลางฐานยาว ${d} ซม. สูงตั้งฉาก ${h} ซม. จงหาปริมาตรของกรวย (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',d:d+' ซม.',h:h+' ซม.'},
+  steps:[`รัศมี r = ${d} ÷ 2 = ${r} ซม.`,`V = ⅓πr²h = ⅓ × 3.14 × ${r*r} × ${h}`,`V = ${fmt(PI*r*r*h)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[PI*d*d*h/3,PI*r*r*h,PI*d*h/3,PI*r*h/3]};},
+ ()=>{const d=coneDims(8),{r,h,l}=d,ans=PI*r*l;return{kind:'cM2',p:{d:2*r,h,l},unit:'ซม.²',ans,
+  text:`หมวกปาร์ตี้ทรงกรวยของน้องกรวยมีเส้นผ่านศูนย์กลางปากหมวก ${2*r} ซม. และความยาวเส้นสูงเอียง ${l} ซม. ใช้กระดาษคลุมเฉพาะผิวข้าง (ไม่รวมฐาน) ต้องใช้กระดาษกี่ตารางเซนติเมตร (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',d:2*r+' ซม.',l:l+' ซม.'},
+  steps:[`รัศมี r = ${2*r} ÷ 2 = ${r} ซม.`,`พื้นที่ผิวข้าง = πrℓ = 3.14 × ${r} × ${l} ${E(ans)} ซม.²`],
+  wrongs:[PI*r*r+PI*r*l,PI*2*r*l,PI*r*h,PI*r*r]};},
+ ()=>{const d=coneDims(8),{r,h,l}=d,ans=PI*r*(r+l);return{kind:'cM3',p:{d:2*r,h,l},unit:'ซม.²',ans,
+  text:`กรวยรูปหนึ่งมีเส้นผ่านศูนย์กลางฐานยาว ${2*r} ซม. และความยาวเส้นสูงเอียง ${l} ซม. จงหาพื้นที่ผิวทั้งหมดของกรวย (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',d:2*r+' ซม.',l:l+' ซม.'},
+  steps:[`รัศมี r = ${2*r} ÷ 2 = ${r} ซม.`,`พื้นที่ฐาน πr² = 3.14 × ${r*r} ${E(PI*r*r)} ซม.²`,`พื้นที่ผิวข้าง πrℓ = 3.14 × ${r} × ${l} ${E(PI*r*l)} ซม.²`,`พื้นที่ผิวทั้งหมด = ${fmt(PI*r*r)} + ${fmt(PI*r*l)} ${E(ans)} ซม.²`],
+  wrongs:[PI*r*l,PI*2*r*(2*r+l),PI*r*r+PI*r*h,PI*r*r]};},
+ ()=>{const r=ri(2,8),h=3*ri(1,6),V=PI*r*r*h/3;return{kind:'cM4',p:{V,r},unit:'ซม.',ans:h,
+  text:`กรวยรูปหนึ่งมีปริมาตร ${fmt(V)} ลูกบาศก์เซนติเมตร และรัศมีฐานยาว ${r} ซม. จงหาความสูงตั้งฉากของกรวย (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',r:r+' ซม.',h:'h = ?'},
+  steps:[`จาก V = ⅓πr²h จะได้ h = (3 × V) ÷ (πr²)`,`πr² = 3.14 × ${r*r} = ${fmt(PI*r*r)}`,`h = (3 × ${fmt(V)}) ÷ ${fmt(PI*r*r)} = ${fmt(3*V)} ÷ ${fmt(PI*r*r)} ${E(h)} ซม.`],
+  wrongs:[V/(PI*r*r),3*V/(PI*r),h*2,V*3/(PI*r*r)+r]};},
+ ()=>{const d=coneDims(9),{r,h,l}=d,ans=PI*r*r*h/3;return{kind:'cM5',p:{r,h,l},unit:'ซม.³',ans,
+  text:`ไอศกรีมโคนของน้องกรวยเป็นทรงกรวย รัศมีปากโคนยาว ${r} ซม. สูงตั้งฉาก ${h} ซม. ถ้าบรรจุไอศกรีมเต็มโคนพอดี จะได้ไอศกรีมปริมาตรกี่ลูกบาศก์เซนติเมตร (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',r:r+' ซม.',h:h+' ซม.'},
+  steps:[`V = ⅓πr²h = ⅓ × 3.14 × ${r*r} × ${h}`,`V = ${fmt(PI*r*r*h)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[PI*r*r*h,PI*r*l*h/3,PI*r*r*l/3,PI*r*h/3]};}
+],hard:[
+ ()=>{const d=coneDims(),{r,h,l}=d,ans=PI*r*(r+l);return{kind:'cH1',p:{r,h,l},unit:'ซม.²',ans,
+  text:`กรวยรูปหนึ่งมีรัศมีฐานยาว ${r} ซม. สูงตั้งฉาก ${h} ซม. จงหาพื้นที่ผิวทั้งหมดของกรวย (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',r:r+' ซม.',h:h+' ซม.'},
+  steps:[...stepsCone(r,h,l,'ซม.'),`พื้นที่ฐาน πr² = 3.14 × ${r*r} ${E(PI*r*r)} ซม.²`,`พื้นที่ผิวข้าง πrℓ = 3.14 × ${r} × ${l} ${E(PI*r*l)} ซม.²`,`พื้นที่ผิวทั้งหมด = ${fmt(PI*r*r)} + ${fmt(PI*r*l)} ${E(ans)} ซม.²`],
+  wrongs:[PI*r*r+PI*r*h,PI*r*l,PI*r*r+2*PI*r*l,PI*r*(r+h)+PI*r*r]};},
+ ()=>{const d=coneDims(),{r,h,l}=d,ans=PI*r*r*h/3;return{kind:'cH2',p:{r,h,l},unit:'ซม.³',ans,
+  text:`กรวยรูปหนึ่งมีรัศมีฐานยาว ${r} ซม. ความยาวเส้นสูงเอียง ${l} ซม. จงหาปริมาตรของกรวย (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',r:r+' ซม.',l:l+' ซม.',h:'h = ?'},
+  steps:[`ความสูงตั้งฉาก h² = ℓ² − r² = ${l}² − ${r}² = ${l*l} − ${r*r} = ${h*h}`,`h = √${h*h} = ${h} ซม.`,`V = ⅓πr²h = ⅓ × 3.14 × ${r*r} × ${h}`,`V = ${fmt(PI*r*r*h)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[PI*r*r*l/3,PI*r*r*h,PI*r*h/3,PI*r*r*h/2]};},
+ ()=>{const d=coneDims(8),{r,h,l}=d,price=pick([50,60,80,100,120]),lat=PI*r*l,ans=lat*price;return{kind:'cH3',p:{r,h,l,price},unit:'บาท',ans,
+  text:`หลังคาทรงกรวยของศาลารัศมีฐานยาว ${r} เมตร สูงตั้งฉาก ${h} เมตร ต้องการทาสีเฉพาะผิวข้างของกรวย ราคาทาสีตารางเมตรละ ${price} บาท จะต้องจ่ายค่าทาสีกี่บาท (ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',r:r+' ม.',h:h+' ม.'},
+  steps:[...stepsCone(r,h,l,'ม.'),`พื้นที่ผิวข้าง πrℓ = 3.14 × ${r} × ${l} ${E(lat)} ม.²`,`ค่าทาสี = ${fmt(lat)} × ${price} ${E(ans)} บาท`],
+  wrongs:[(PI*r*r+lat)*price,PI*r*h*price,lat,PI*r*r*price]};},
+ ()=>{const r=pick([10,15,20]),h=3*pick([4,5,6,7,8,10,12,15]),cm=PI*r*r*h/3,ans=cm/1000;return{kind:'cH4',p:{r,h},unit:'ลิตร',ans,
+  text:`ถังน้ำทรงกรวยของน้องกรวยมีรัศมีปากถังยาว ${r} ซม. สูงตั้งฉาก ${h} ซม. ถังนี้จุน้ำได้เต็มถังกี่ลิตร (1 ลิตร = 1,000 ลูกบาศก์เซนติเมตร, ใช้ π ≈ 3.14)`,
+  fig:{t:'cone',r:r+' ซม.',h:h+' ซม.'},
+  steps:[`V = ⅓πr²h = ⅓ × 3.14 × ${r*r} × ${h} ${E(cm)} ซม.³`,`เปลี่ยนหน่วย: ${fmt(cm)} ÷ 1,000 ${E(ans)} ลิตร`],
+  wrongs:[cm,cm/100,PI*r*r*h/1000,cm/10000]};}
+]};
+
+/* ---------- ทรงกลม ---------- */
+const SPH={easy:[
+ ()=>{const r=ri(2,9),ans=4*PI*r**3/3;return{kind:'sE1',p:{r},unit:'ซม.³',ans,
+  text:`ลูกบอลทรงกลมมีรัศมียาว ${r} ซม. จงหาปริมาตรของลูกบอล (ใช้ π ≈ 3.14)`,
+  fig:{t:'sph',r:r+' ซม.'},
+  steps:[`สูตร: V = ⁴⁄₃πr³`,`r³ = ${r} × ${r} × ${r} = ${r**3}`,`V = ⁴⁄₃ × 3.14 × ${r**3} = ${fmt(4*PI*r**3)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[4*PI*r*r,4*PI*r**3,PI*r**3/3,2*PI*r**3/3]};},
+ ()=>{const r=ri(2,12),ans=4*PI*r*r;return{kind:'sE2',p:{r},unit:'ซม.²',ans,
+  text:`ลูกบอลทรงกลมมีรัศมียาว ${r} ซม. จงหาพื้นที่ผิวของลูกบอล (ใช้ π ≈ 3.14)`,
+  fig:{t:'sph',r:r+' ซม.'},
+  steps:[`สูตร: พื้นที่ผิว = 4πr²`,`แทนค่า: 4 × 3.14 × ${r}² = 4 × 3.14 × ${r*r} ${E(ans)} ซม.²`],
+  wrongs:[PI*r*r,4*PI*r**3/3,2*PI*r*r,4*PI*r]};},
+ ()=>{const r=ri(2,9),d=2*r,ans=4*PI*r*r;return{kind:'sE3',p:{d},unit:'ซม.²',ans,
+  text:`ลูกบอลทรงกลมมีเส้นผ่านศูนย์กลางยาว ${d} ซม. จงหาพื้นที่ผิวของลูกบอล (ใช้ π ≈ 3.14)`,
+  fig:{t:'sph',d:d+' ซม.'},
+  steps:[`รัศมี r = ${d} ÷ 2 = ${r} ซม.`,`พื้นที่ผิว = 4πr² = 4 × 3.14 × ${r*r} ${E(ans)} ซม.²`],
+  wrongs:[4*PI*d*d,2*PI*r*r,PI*r*r,4*PI*d]};},
+ ()=>{const r=ri(2,8),d=2*r,ans=4*PI*r**3/3;return{kind:'sE4',p:{d},unit:'ซม.³',ans,
+  text:`ลูกบอลทรงกลมมีเส้นผ่านศูนย์กลางยาว ${d} ซม. จงหาปริมาตรของลูกบอล (ใช้ π ≈ 3.14)`,
+  fig:{t:'sph',d:d+' ซม.'},
+  steps:[`รัศมี r = ${d} ÷ 2 = ${r} ซม.`,`V = ⁴⁄₃πr³ = ⁴⁄₃ × 3.14 × ${r**3} = ${fmt(4*PI*r**3)} ÷ 3 ${E(ans)} ซม.³`],
+  wrongs:[4*PI*d**3/3,4*PI*r*r,4*PI*r**3,PI*d**3/3]};}
+],medium:[
+ ()=>{const r=ri(2,12),SA=4*PI*r*r;return{kind:'sM1',p:{SA},unit:'ซม.',ans:r,
+  text:`ลูกบอลทรงกลมมีพื้นที่ผิว ${fmt(SA)} ตารางเซนติเมตร จงหารัศมีของลูกบอล (ใช้ π ≈ 3.14)`,
+  fig:{t:'sph',r:'r = ?'},
+  steps:[`จาก 4πr² = ${fmt(SA)} จะได้ r² = ${fmt(SA)} ÷ (4 × 3.14)`,`r² = ${fmt(SA)} ÷ 12.56 = ${r*r}`,`r = √${r*r} ${E(r)} ซม.`],
+  wrongs:[r*r,2*r,SA/(2*PI),SA/(4*PI*r)+r]};},
+ ()=>{const r=ri(2,9),ans=2*PI*r**3/3;return{kind:'sM2',p:{r},unit:'ซม.³',ans,
+  text:`ชามครึ่งทรงกลมใบหนึ่งมีรัศมีภายในยาว ${r} ซม. จุน้ำได้เต็มปากชามกี่ลูกบาศก์เซนติเมตร (ใช้ π ≈ 3.14)`,
+  fig:{t:'hemi',r:r+' ซม.'},
+  steps:[`ปริมาตรทรงกลมเต็ม = ⁴⁄₃πr³ = ⁴⁄₃ × 3.14 × ${r**3} ${E(4*PI*r**3/3)} ซม.³`,`ครึ่งทรงกลมมีปริมาตรเป็นครึ่งหนึ่ง: ${fmt(4*PI*r**3/3)} ÷ 2 ${E(ans)} ซม.³`],
+  wrongs:[4*PI*r**3/3,2*PI*r*r,2*PI*r**3,PI*r**3/3]};},
+ ()=>{const r=ri(2,12),ans=3*PI*r*r;return{kind:'sM3',p:{r},unit:'ซม.²',ans,
+  text:`โดมทรงครึ่งทรงกลมตันมีรัศมี ${r} ซม. จงหาพื้นที่ผิวทั้งหมด (รวมฐานวงกลมแบนด้านล่าง) (ใช้ π ≈ 3.14)`,
+  fig:{t:'hemi',r:r+' ซม.'},
+  steps:[`พื้นที่ผิวโค้ง = ครึ่งหนึ่งของ 4πr² = 2πr² = 2 × 3.14 × ${r*r} ${E(2*PI*r*r)} ซม.²`,`พื้นที่ฐานวงกลม = πr² = 3.14 × ${r*r} ${E(PI*r*r)} ซม.²`,`พื้นที่ผิวทั้งหมด = ${fmt(2*PI*r*r)} + ${fmt(PI*r*r)} ${E(ans)} ซม.²`],
+  wrongs:[2*PI*r*r,4*PI*r*r,5*PI*r*r,PI*r*r]};},
+ ()=>{const r1=ri(2,6),r2_=ri(2,6),ans=4*PI*(r1**3+r2_**3)/3;return{kind:'sM4',p:{r1,r2:r2_},unit:'ซม.³',ans,
+  text:`น้องทรงกลมมีลูกแก้ว 2 ลูก ลูกแรกรัศมี ${r1} ซม. ลูกที่สองรัศมี ${r2_} ซม. ลูกแก้วทั้งสองลูกมีปริมาตรรวมกันกี่ลูกบาศก์เซนติเมตร (ใช้ π ≈ 3.14)`,
+  fig:null,
+  steps:[`V₁ = ⁴⁄₃ × 3.14 × ${r1**3} ${E(4*PI*r1**3/3)} ซม.³`,`V₂ = ⁴⁄₃ × 3.14 × ${r2_**3} ${E(4*PI*r2_**3/3)} ซม.³`,`ปริมาตรรวม = ${fmt(4*PI*r1**3/3)} + ${fmt(4*PI*r2_**3/3)} ${E(ans)} ซม.³`],
+  wrongs:[4*PI*(r1+r2_)**3/3,4*PI*(r1*r1+r2_*r2_)/3,4*PI*(r1**3+r2_**3),4*PI*(r1**3)/3]};},
+ ()=>{const r=pick([5,10,15,20]),d=2*r,cm=4*PI*r**3/3,ans=cm/1000;return{kind:'sM5',p:{d},unit:'ลิตร',ans,
+  text:`ถังเก็บน้ำทรงกลมมีเส้นผ่านศูนย์กลางภายใน ${d} ซม. จุน้ำได้เต็มถังกี่ลิตร (1 ลิตร = 1,000 ลูกบาศก์เซนติเมตร, ใช้ π ≈ 3.14)`,
+  fig:{t:'sph',d:d+' ซม.'},
+  steps:[`รัศมี r = ${d} ÷ 2 = ${r} ซม.`,`V = ⁴⁄₃πr³ = ⁴⁄₃ × 3.14 × ${r**3} ${E(cm)} ซม.³`,`เปลี่ยนหน่วย: ${fmt(cm)} ÷ 1,000 ${E(ans)} ลิตร`],
+  wrongs:[cm,4*PI*d**3/3/1000,cm/100,cm/10000]};}
+],hard:[
+ ()=>{const r=pick([3,6,9]),V=4*PI*r**3/3,ans=4*PI*r*r;return{kind:'sH1',p:{V},unit:'ซม.²',ans,
+  text:`ลูกบอลทรงกลมมีปริมาตร ${fmt(V)} ลูกบาศก์เซนติเมตร จงหาพื้นที่ผิวของลูกบอล (ใช้ π ≈ 3.14)`,
+  fig:{t:'sph',r:'r = ?'},
+  steps:[`จาก V = ⁴⁄₃πr³ จะได้ r³ = (3 × V) ÷ (4π)`,`r³ = (3 × ${fmt(V)}) ÷ 12.56 = ${r**3}`,`r = ∛${r**3} = ${r} ซม.`,`พื้นที่ผิว = 4πr² = 4 × 3.14 × ${r*r} ${E(ans)} ซม.²`],
+  wrongs:[V,PI*r*r,2*PI*r*r,4*PI*r**3]};},
+ ()=>{const r=ri(2,9),ans=8*r**3-4*PI*r**3/3;return{kind:'sH2',p:{r},unit:'ซม.³',ans,
+  text:`ลูกบอลทรงกลมรัศมี ${r} ซม. วางอยู่ในกล่องลูกบาศก์พอดี (ผิวลูกบอลสัมผัสทุกด้านของกล่อง) จงหาปริมาตรส่วนที่ว่างในกล่อง (ใช้ π ≈ 3.14)`,
+  fig:{t:'cubesph',r:r+' ซม.',s:2*r+' ซม.'},
+  steps:[`ด้านของกล่อง = เส้นผ่านศูนย์กลางลูกบอล = 2 × ${r} = ${2*r} ซม.`,`ปริมาตรกล่อง = ${2*r}³ = ${8*r**3} ซม.³`,`ปริมาตรลูกบอล = ⁴⁄₃ × 3.14 × ${r**3} ${E(4*PI*r**3/3)} ซม.³`,`ส่วนที่ว่าง = ${fmt(8*r**3)} − ${fmt(4*PI*r**3/3)} ${E(ans)} ซม.³`],
+  wrongs:[8*r**3,4*PI*r**3/3,r**3-4*PI*r**3/3,8*r**3+4*PI*r**3/3]};},
+ ()=>{const r=ri(2,6),d=2*r,price=pick([40,50,60,80,100]),area=4*PI*r*r,ans=area*price;return{kind:'sH3',p:{d,price},unit:'บาท',ans,
+  text:`ถังเก็บน้ำทรงกลมมีเส้นผ่านศูนย์กลาง ${d} เมตร ต้องการทาสีผิวด้านนอกทั้งหมด ราคาทาสีตารางเมตรละ ${price} บาท จะต้องจ่ายค่าทาสีกี่บาท (ใช้ π ≈ 3.14)`,
+  fig:{t:'sph',d:d+' ม.'},
+  steps:[`รัศมี r = ${d} ÷ 2 = ${r} เมตร`,`พื้นที่ผิว = 4πr² = 4 × 3.14 × ${r*r} ${E(area)} ม.²`,`ค่าทาสี = ${fmt(area)} × ${price} ${E(ans)} บาท`],
+  wrongs:[PI*r*r*price,4*PI*d*d*price,4*PI*r**3/3*price,area]};},
+ ()=>{const s=ri(1,4),k=pick([2,3,4]),R=k*s,ans=k**3;return{kind:'sH4',p:{R,s},unit:'ลูก',ans,
+  text:`หลอมลูกเหล็กทรงกลมรัศมี ${R} ซม. แล้วนำเนื้อเหล็กทั้งหมดไปหล่อเป็นลูกเหล็กทรงกลมเล็กรัศมี ${s} ซม. (ไม่สูญเสียเนื้อเหล็ก) จะหล่อได้กี่ลูก`,
+  fig:null,
+  steps:[`ปริมาตรลูกใหญ่ = ⁴⁄₃π × ${R}³ = ⁴⁄₃π × ${R**3}`,`ปริมาตรลูกเล็ก = ⁴⁄₃π × ${s}³ = ⁴⁄₃π × ${s**3}`,`จำนวนลูก = ${R**3} ÷ ${s**3} ${E(ans)} ลูก (ค่า π และ ⁴⁄₃ ตัดกันได้)`],
+  wrongs:[k,k*k,2*k**3,k**3-k]};}
+]};
+
+const LEVELS=[
+ {key:'pyr',m:'pyr',name:'อาณาจักรพีระมิด',char:'น้องพีระมิด',topic:'ปริมาตรและพื้นที่ผิวของพีระมิด',gens:PYR},
+ {key:'cone',m:'cone',name:'อาณาจักรกรวย',char:'น้องกรวย',topic:'ปริมาตรและพื้นที่ผิวของกรวย',gens:CONE},
+ {key:'sph',m:'sph',name:'อาณาจักรทรงกลม',char:'น้องทรงกลม',topic:'ปริมาตรและพื้นที่ผิวของทรงกลม',gens:SPH}
+];
+
+/* ตรวจเฉลยซ้ำด้วยสูตรอีกชุดหนึ่ง คำนวณจากพารามิเตอร์ของโจทย์เท่านั้น */
+const CHECK={
+ pE1:p=>p.B*p.h/3, pE2:p=>Math.pow(p.a,2)*p.h/3, pE3:p=>3*p.V/p.B, pE4:p=>0.5*p.a*p.l,
+ pM1:p=>p.w*p.len*p.h/3, pM2:p=>4*(0.5*p.a*p.l), pM3:p=>p.a*p.a+4*(0.5*p.a*p.l), pM4:p=>Math.sqrt(p.h*p.h+Math.pow(p.a/2,2)), pM5:p=>p.a*p.a*p.h/3,
+ pH1:p=>p.a*p.a+4*(0.5*p.a*Math.sqrt(p.h*p.h+Math.pow(p.a/2,2))), pH2:p=>p.a*p.a*Math.sqrt(p.l*p.l-Math.pow(p.a/2,2))/3,
+ pH3:p=>4*(0.5*p.a*Math.sqrt(p.h*p.h+Math.pow(p.a/2,2)))*p.price, pH4:p=>Math.sqrt(3*p.V/p.h),
+ cE1:p=>PI*p.r*p.r*p.h/3, cE2:p=>PI*Math.pow(p.r,2), cE3:p=>PI*p.r*p.r+PI*p.r*p.l, cE4:p=>Math.sqrt(p.r*p.r+p.h*p.h),
+ cM1:p=>PI*Math.pow(p.d/2,2)*p.h/3, cM2:p=>PI*(p.d/2)*p.l, cM3:p=>PI*(p.d/2)*((p.d/2)+p.l), cM4:p=>3*p.V/(PI*p.r*p.r), cM5:p=>PI*p.r*p.r*p.h/3,
+ cH1:p=>PI*p.r*(p.r+Math.sqrt(p.r*p.r+p.h*p.h)), cH2:p=>PI*p.r*p.r*Math.sqrt(p.l*p.l-p.r*p.r)/3, cH3:p=>PI*p.r*Math.sqrt(p.r*p.r+p.h*p.h)*p.price, cH4:p=>PI*p.r*p.r*p.h/3/1000,
+ sE1:p=>4/3*PI*Math.pow(p.r,3), sE2:p=>4*PI*p.r*p.r, sE3:p=>PI*p.d*p.d, sE4:p=>4/3*PI*Math.pow(p.d/2,3),
+ sM1:p=>Math.sqrt(p.SA/(4*PI)), sM2:p=>2/3*PI*Math.pow(p.r,3), sM3:p=>3*PI*p.r*p.r, sM4:p=>4/3*PI*(Math.pow(p.r1,3)+Math.pow(p.r2,3)), sM5:p=>4/3*PI*Math.pow(p.d/2,3)/1000,
+ sH1:p=>4*PI*Math.pow(Math.cbrt(3*p.V/(4*PI)),2), sH2:p=>Math.pow(2*p.r,3)-4/3*PI*Math.pow(p.r,3), sH3:p=>PI*p.d*p.d*p.price, sH4:p=>Math.pow(p.R/p.s,3)
+};
+
+/* สร้างตัวเลือก 4 ข้อ: เฉลย 1 + ตัวลวงจากความผิดพลาดที่พบบ่อย + ตัวเติมให้ครบ (ไม่ซ้ำกัน) */
+function buildOptions(q){
+  const isInt=Number.isInteger(q.ans);
+  const seen=new Set([fmt(q.ans)]),opts=[{v:q.ans,correct:true}];
+  const add=w=>{
+    if(typeof w!=='number'||!isFinite(w))return;
+    if(isInt)w=Math.round(w);
+    w=r2(w);
+    if(w<=0||opts.length>=4)return;
+    const s=fmt(w);if(seen.has(s))return;
+    seen.add(s);opts.push({v:w,correct:false});
+  };
+  shuffle(q.wrongs).forEach(add);
+  let g=0;
+  while(opts.length<4&&g++<400){
+    if(Math.random()<.5)add(q.ans*pick([0.5,0.75,1.25,1.5,2,3,1/3,0.9,1.1]));
+    else add(q.ans+pick([-1,1])*ri(1,Math.max(2,Math.round(q.ans*0.3))));
+  }
+  q.opts=shuffle(opts);
+  q.correctIndex=q.opts.findIndex(o=>o.correct);
+}
+
+/* ตรวจสอบโจทย์ก่อนนำไปแสดง: เฉลย ตัวเลือก ความสัมพันธ์ทางเรขาคณิต หน่วย */
+function validate(q){
+  try{
+    if(!q||!isFinite(q.ans)||!(q.ans>0)||!q.unit||!q.text||!Array.isArray(q.steps)||!q.steps.length)return false;
+    if(!q.opts||q.opts.length!==4)return false;
+    if(new Set(q.opts.map(o=>fmt(o.v))).size!==4)return false;
+    if(q.opts.some(o=>!(o.v>0)||!isFinite(o.v)))return false;
+    if(q.opts.filter(o=>o.correct).length!==1)return false;
+    if(q.opts[q.correctIndex]===undefined||!q.opts[q.correctIndex].correct)return false;
+    if(fmt(q.opts[q.correctIndex].v)!==fmt(q.ans))return false;
+    const f=q.raw*100-Math.floor(q.raw*100+1e-9);
+    if(Math.abs(f-.5)<.02)return false;                       // กันค่าที่ปัดเศษกำกวม
+    const p=q.p,eps=1e-9;
+    if(p.a!==undefined&&p.l!==undefined&&!(p.l>p.a/2))return false;
+    if(p.a!==undefined&&p.h!==undefined&&p.l!==undefined&&Math.abs(p.l*p.l-(p.h*p.h+p.a*p.a/4))>eps)return false;
+    if(p.r!==undefined&&p.h!==undefined&&p.l!==undefined&&Math.abs(p.l*p.l-(p.h*p.h+p.r*p.r))>eps)return false;
+    if(p.d!==undefined&&p.h!==undefined&&p.l!==undefined&&Math.abs(p.l*p.l-(p.h*p.h+p.d*p.d/4))>eps)return false;
+    if(p.r!==undefined&&p.l!==undefined&&!(p.l>p.r))return false;
+    const chk=CHECK[q.kind];
+    if(!chk||fmt(chk(p))!==fmt(q.ans))return false;
+    return true;
+  }catch(e){return false;}
+}
+
+function genValid(g,diff){
+  for(let i=0;i<120;i++){
+    const q=g();
+    q.diff=diff;q.raw=q.ans;
+    const needRound=Math.abs(q.raw*100-Math.round(q.raw*100))>1e-6;
+    q.ans=r2(q.raw);
+    q.steps=q.steps.concat(`ตอบ <b>${fmt(q.ans)} ${q.unit}</b>${needRound?' (ปัดเศษเป็นทศนิยม 2 ตำแหน่ง)':''}`);
+    buildOptions(q);
+    if(validate(q))return q;
+  }
+  return null;
+}
+
+/* สร้างชุดโจทย์ 10 ข้อของด่าน: ง่าย 3 ปานกลาง 4 ยาก 3 สุ่มประเภท ตัวเลข ลำดับ และตำแหน่งตัวเลือกใหม่ทุกครั้ง */
+function makeQuiz(li){
+  const L=LEVELS[li];
+  for(let attempt=0;attempt<40;attempt++){
+    const list=[];
+    for(const [d,n] of [['easy',3],['medium',4],['hard',3]]){
+      shuffle(L.gens[d]).slice(0,n).forEach(g=>list.push(genValid(g,d)));
+    }
+    if(list.length===10&&list.every(Boolean)){
+      const qs=shuffle(list);
+      qs.forEach((q,i)=>{q.no=i+1;});
+      if(qs.every(validate)&&new Set(qs.map(q=>q.kind)).size===10)return qs;     // ตรวจซ้ำทั้งชุดก่อนแสดง
+    }
+  }
+  throw new Error('ไม่สามารถสร้างโจทย์ได้');
+}
+
+if(typeof module!=='undefined'){module.exports={makeQuiz,validate,fmt,r2,LEVELS,CHECK,PI};}
+
+/* =====================================================
+   ส่วนที่ 2: หน้าจอเกม
+   ===================================================== */
+if(typeof document!=='undefined'){
+(function(){
+const $=s=>document.querySelector(s);
+const screen=$('#screen'),barEl=$('#bar'),modal=$('#modal'),mbox=$('#mbox');
+const LETTERS=['ก','ข','ค','ง'];
+const GOOD=['เก่งมากเลย! ถูกต้อง 🎉','สุดยอด! ไปต่ออีกข้อนะ ✨','ยอดเยี่ยม! คิดได้ถูกต้อง 🌟','เยี่ยมไปเลย! 💖'];
+const SOFT=['ไม่เป็นไรนะ ลองดูวิธีทำด้วยกัน แล้วข้อต่อไปสู้ ๆ! 💪','เกือบแล้ว! ดูวิธีทำแล้วจะเข้าใจขึ้นอีกเยอะ 🌈','ทุกข้อที่พลาดคือบทเรียนดี ๆ นะ สู้ต่อไป! 🍀'];
+const DIFF={easy:['ง่าย','d-easy'],medium:['ปานกลาง','d-med'],hard:['ยาก','d-hard']};
+const G={view:'home',li:0,qs:[],i:0,sel:null,checked:false,res:[]};
+let BEST=[null,null,null];
+try{const b=JSON.parse(localStorage.getItem('mga_best_v1'));if(Array.isArray(b)&&b.length===3)BEST=b;}catch(e){}
+const saveBest=()=>{try{localStorage.setItem('mga_best_v1',JSON.stringify(BEST));}catch(e){}};
+
+/* ---------- ตัวละคร ---------- */
+function face(cx,cy,mood){
+  const eyes=[cx-11,cx+11].map(x=>mood==='happy'
+    ?`<path d="M${x-5} ${cy} q5 -7 10 0" fill="none" stroke="#3b2d5c" stroke-width="3" stroke-linecap="round"/>`
+    :`<circle cx="${x}" cy="${cy}" r="4" fill="#3b2d5c"/><circle cx="${x+1.3}" cy="${cy-1.4}" r="1.4" fill="#fff"/>`).join('');
+  const brows=mood==='soft'?`<path d="M${cx-17} ${cy-8} l8 -3 M${cx+17} ${cy-8} l-8 -3" stroke="#3b2d5c" stroke-width="2" stroke-linecap="round"/>`:'';
+  const mouth=mood==='happy'?`<path d="M${cx-7} ${cy+7} q7 10 14 0 z" fill="#ff6f91" stroke="#3b2d5c" stroke-width="2" stroke-linejoin="round"/>`
+    :mood==='soft'?`<path d="M${cx-5} ${cy+11} q5 -4 10 0" fill="none" stroke="#3b2d5c" stroke-width="2.2" stroke-linecap="round"/>`
+    :`<path d="M${cx-6} ${cy+7} q6 7 12 0" fill="none" stroke="#3b2d5c" stroke-width="2.4" stroke-linecap="round"/>`;
+  const cheeks=`<ellipse cx="${cx-19}" cy="${cy+7}" rx="5" ry="3.2" fill="#ff9ec0" opacity=".7"/><ellipse cx="${cx+19}" cy="${cy+7}" rx="5" ry="3.2" fill="#ff9ec0" opacity=".7"/>`;
+  return eyes+brows+mouth+cheeks;
+}
+function mascot(t,mood){
+  mood=mood||'normal';let body,fx,fy;
+  if(t==='pyr'){body=`<polygon points="50,8 92,86 8,86" fill="#ff9fcb" stroke="#e0679f" stroke-width="3" stroke-linejoin="round"/><polygon points="50,8 92,86 62,86" fill="#ff7fb7" opacity=".4"/>`;fx=50;fy=58;}
+  else if(t==='cone'){body=`<polygon points="24,52 76,52 50,96" fill="#ffd77a" stroke="#e0a63a" stroke-width="3" stroke-linejoin="round"/><path d="M36 62 L58 84 M48 54 L64 72 M66 54 L40 86" stroke="#e0a63a" stroke-width="1.6" opacity=".6"/><circle cx="50" cy="36" r="29" fill="#a9dcff" stroke="#5aa9e6" stroke-width="3"/><ellipse cx="38" cy="20" rx="8" ry="4" fill="#fff" opacity=".55" transform="rotate(-30 38 20)"/>`;fx=50;fy=38;}
+  else{body=`<circle cx="50" cy="52" r="40" fill="#c4b2ff" stroke="#8a6ee0" stroke-width="3"/><ellipse cx="33" cy="30" rx="10" ry="6" fill="#fff" opacity=".55" transform="rotate(-35 33 30)"/>`;fx=50;fy=54;}
+  return `<svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">${body}${face(fx,fy,mood)}</svg>`;
+}
+
+/* ---------- ภาพประกอบโจทย์ (SVG) ---------- */
+function figSVG(f){
+  if(!f)return '';
+  const T=(x,y,t,a)=>`<text class="lb" x="${x}" y="${y}" text-anchor="${a||'middle'}" fill="#6a4fc9">${t}</text>`;
+  const TR_=(x,y,t,a)=>`<text class="lb" x="${x}" y="${y}" text-anchor="${a||'middle'}" fill="#d6336c">${t}</text>`;
+  const TB=(x,y,t,a)=>`<text class="lb" x="${x}" y="${y}" text-anchor="${a||'middle'}" fill="#1c7ed6">${t}</text>`;
+  let s='';
+  if(f.t==='pyr'){
+    s=`<polygon points="132,110 262,138 157,26" fill="#e7d9ff" stroke="#9b7ae8" stroke-width="2" stroke-dasharray="5 4"/>
+<polygon points="52,152 182,180 262,138 132,110" fill="#cfeaff" fill-opacity=".75" stroke="#5aa9e6" stroke-width="2"/>
+<polygon points="157,26 52,152 182,180" fill="#ffc2de" stroke="#e0679f" stroke-width="2.5" stroke-linejoin="round"/>
+<polygon points="157,26 182,180 262,138" fill="#ff9fcb" stroke="#e0679f" stroke-width="2.5" stroke-linejoin="round"/>
+<line x1="157" y1="26" x2="157" y2="145" stroke="#6a4fc9" stroke-width="2.5" stroke-dasharray="6 4"/>
+<line x1="157" y1="26" x2="117" y2="166" stroke="#d6336c" stroke-width="2.5" stroke-dasharray="6 4"/>
+<circle cx="157" cy="145" r="3" fill="#6a4fc9"/><circle cx="117" cy="166" r="3" fill="#d6336c"/>`;
+    if(f.h)s+=T(166,92,f.h,'start');
+    if(f.l)s+=TR_(125,86,f.l,'end');
+    if(f.a)s+=TB(117,202,f.a);
+  }else if(f.t==='cone'){
+    s=`<path d="M65 160 L150 24 L235 160 A85 22 0 0 1 65 160 Z" fill="#ffe08a" stroke="#e0a63a" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M65 160 A85 22 0 0 1 235 160" fill="#fff3c4" fill-opacity=".7" stroke="#e0a63a" stroke-width="2" stroke-dasharray="5 4"/>
+<line x1="150" y1="24" x2="150" y2="160" stroke="#6a4fc9" stroke-width="2.5" stroke-dasharray="6 4"/>
+<circle cx="150" cy="160" r="3" fill="#6a4fc9"/>`;
+    if(f.d)s+=`<line x1="65" y1="160" x2="235" y2="160" stroke="#1c7ed6" stroke-width="2.5"/>`+TB(150,152,f.d);
+    else if(f.r)s+=`<line x1="150" y1="160" x2="235" y2="160" stroke="#1c7ed6" stroke-width="2.5"/>`+TB(193,152,f.r);
+    if(f.h)s+=T(142,96,f.h,'end');
+    if(f.l)s+=TR_(206,84,f.l,'start');
+  }else if(f.t==='sph'){
+    s=`<defs><radialGradient id="sg" cx="35%" cy="30%"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#d9ccff"/><stop offset="1" stop-color="#a58cf5"/></radialGradient></defs>
+<circle cx="150" cy="105" r="75" fill="url(#sg)" stroke="#8a6ee0" stroke-width="2.5"/>
+<path d="M75 105 A75 20 0 0 0 225 105" fill="none" stroke="#8a6ee0" stroke-width="2"/>
+<path d="M75 105 A75 20 0 0 1 225 105" fill="none" stroke="#8a6ee0" stroke-width="2" stroke-dasharray="5 4"/>
+<circle cx="150" cy="105" r="3" fill="#6a4fc9"/>`;
+    if(f.d)s+=`<line x1="75" y1="105" x2="225" y2="105" stroke="#1c7ed6" stroke-width="2.5"/>`+TB(150,96,f.d);
+    else if(f.r)s+=`<line x1="150" y1="105" x2="225" y2="105" stroke="#1c7ed6" stroke-width="2.5"/>`+TB(188,96,f.r);
+  }else if(f.t==='hemi'){
+    s=`<defs><radialGradient id="hg" cx="35%" cy="30%"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#d9ccff"/><stop offset="1" stop-color="#a58cf5"/></radialGradient></defs>
+<path d="M75 135 A75 75 0 0 1 225 135 A75 20 0 0 1 75 135 Z" fill="url(#hg)" stroke="#8a6ee0" stroke-width="2.5"/>
+<path d="M75 135 A75 20 0 0 1 225 135" fill="#e7defd" stroke="#8a6ee0" stroke-width="2" stroke-dasharray="5 4"/>
+<circle cx="150" cy="135" r="3" fill="#6a4fc9"/>`;
+    if(f.r)s+=`<line x1="150" y1="135" x2="225" y2="135" stroke="#1c7ed6" stroke-width="2.5"/>`+TB(188,126,f.r);
+  }else if(f.t==='cubesph'){
+    s=`<rect x="70" y="25" width="160" height="160" rx="6" fill="#e6f4ff" stroke="#5aa9e6" stroke-width="2.5"/>
+<circle cx="150" cy="105" r="80" fill="#d9ccff" stroke="#8a6ee0" stroke-width="2.5"/>
+<line x1="150" y1="105" x2="230" y2="105" stroke="#1c7ed6" stroke-width="2.5"/><circle cx="150" cy="105" r="3" fill="#6a4fc9"/>`;
+    s+=TB(192,96,f.r)+T(150,202,'ด้านกล่อง = '+f.s);
+  }
+  const vb=(f.t==='pyr'||f.t==='cone'||f.t==='cubesph')?'0 0 300 212':'0 0 300 190';
+  return `<svg viewBox="${vb}" role="img" aria-label="ภาพประกอบโจทย์">${s}</svg>`;
+}
+
+/* ---------- หน้าจอ ---------- */
+function bestLine(i){const b=BEST[i];return b===null?'ยังไม่เคยเล่น':`คะแนนสูงสุด ${b}/100 ${'⭐'.repeat(b>=80?3:b>=50?2:1)}`;}
+function renderHome(){
+  barEl.innerHTML='';
+  const total=BEST.reduce((a,b)=>a+(b||0),0),played=BEST.filter(b=>b!==null).length;
+  screen.innerHTML=`
+  <section class="hero">
+    <div class="mascots">${mascot('pyr','happy')}${mascot('cone','happy')}${mascot('sph','happy')}</div>
+    <h1>Math Geometry Adventure</h1>
+    <div class="sub">ผจญภัยอาณาจักรสามมิติ</div>
+    <p>ออกผจญภัยกับน้องพีระมิด น้องกรวย และน้องทรงกลม<br>เลือกด่านแล้วมาไขปริศนาปริมาตรและพื้นที่ผิวกัน!</p>
+  </section>
+  <div class="levels">${LEVELS.map((L,i)=>`
+    <div class="card lv c${i}">
+      <span class="no">ด่าน ${i+1}</span>
+      ${mascot(L.m,'normal')}
+      <h3>${L.name}</h3>
+      <p>${L.topic}<br>10 ข้อ • ง่าย 3 / ปานกลาง 4 / ยาก 3</p>
+      <div class="best">${bestLine(i)}</div>
+      <button class="btn big ${['pink','sky','']          [i]}" data-act="start" data-i="${i}">${BEST[i]===null?'เริ่มผจญภัย':'เล่นอีกครั้ง'}</button>
+    </div>`).join('')}</div>
+  ${played?`<p class="sub" style="text-align:center;font-weight:800">คะแนนสะสมสูงสุด ${total}/300 ${played===3?'🏆':''}</p>`:''}
+  <div class="row">
+    <button class="btn yellow" data-act="formulas">📖 ดูสูตร</button>
+    <button class="btn ghost" data-act="howto">❓ วิธีเล่น</button>
+    <button class="btn ghost" data-act="resetall">🔄 เริ่มเกมใหม่ (ล้างคะแนน)</button>
+  </div>
+  <p class="tiny" style="text-align:center;margin-top:14px">ใช้ π ≈ 3.14 • ปัดเศษคำตอบสุดท้ายเป็นทศนิยม 2 ตำแหน่ง</p>`;
+}
+function renderBar(){
+  const L=LEVELS[G.li];
+  barEl.innerHTML=`<div class="bar"><div class="brand">${L.name}</div><div class="row" style="gap:8px">
+   <button class="btn ghost" data-act="formulas">📖 สูตร</button>
+   <button class="btn ghost" data-act="restart">🔄 เริ่มด่านใหม่</button>
+   <button class="btn ghost" data-act="home">🏠 เลือกด่าน</button></div></div>`;
+}
+function scoreNow(){return G.res.filter(r=>r.ok).length*10;}
+function renderQuiz(){
+  renderBar();
+  const L=LEVELS[G.li],q=G.qs[G.i],n=G.qs.length,fig=figSVG(q.fig),d=DIFF[q.diff];
+  const opts=q.opts.map((o,i)=>{
+    let c='opt';
+    if(G.checked){if(o.correct)c+=' right';else if(i===G.sel)c+=' wrong';}else if(i===G.sel)c+=' sel';
+    const mk=G.checked?(o.correct?'<span class="mk">✓</span>':(i===G.sel?'<span class="mk">✗</span>':'')):'';
+    return `<button class="${c}" data-act="pick" data-i="${i}" ${G.checked?'disabled':''}><span class="lt">${LETTERS[i]}</span><span>${fmt(o.v)} <small>${q.unit}</small></span>${mk}</button>`;
+  }).join('');
+  let fb='';
+  if(G.checked){
+    const r=G.res[G.i],last=G.i===n-1;
+    fb=`<div class="fb ${r.ok?'good':'soft'}" id="fb">
+      <div class="fbhead">${mascot(L.m,r.ok?'happy':'soft')}<div><b>${r.msg}</b><div>${r.ok?'ได้รับ +10 คะแนน':`คำตอบที่ถูกต้องคือ <b>${fmt(q.ans)} ${q.unit}</b>`}</div></div></div>
+      <h4>วิธีทำทีละขั้นตอน</h4><ol>${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+      <div class="row"><button class="btn pink big" data-act="next">${last?'ดูสรุปคะแนน 🎁':'ข้อถัดไป ➜'}</button></div></div>`;
+  }
+  screen.innerHTML=`
+   <div class="prog"><i style="width:${(G.i+(G.checked?1:0))/n*100}%"></i></div>
+   <div class="meta"><span class="chip">ข้อ ${G.i+1}/${n}</span><span class="chip ${d[1]}">ระดับ${d[0]}</span><span class="chip">⭐ ${scoreNow()} คะแนน</span></div>
+   <div class="card">
+     <div class="qgrid ${fig?'hasfig':''}"><div class="qtext">${q.text}</div>${fig?`<div class="fig">${fig}</div>`:''}</div>
+     <div class="opts" role="group" aria-label="ตัวเลือกคำตอบ">${opts}</div>
+     ${G.checked?'':`<div class="row"><button class="btn big" data-act="check" id="chk" ${G.sel===null?'disabled':''}>ตรวจคำตอบ ✔</button></div>`}
+     ${fb}
+   </div>
+   <p class="tiny" style="text-align:center;margin-top:10px">ตอบเป็นหน่วยตามที่ระบุ • ปัดเศษทศนิยม 2 ตำแหน่ง • π ≈ 3.14</p>`;
+}
+function medalOf(s){return s>=90?['🥇','เหรียญทองคำ']:s>=70?['🥈','เหรียญเงิน']:s>=50?['🥉','เหรียญทองแดง']:['🎖️','เหรียญกำลังใจ'];}
+function renderSummary(){
+  renderBar();
+  const L=LEVELS[G.li],score=scoreNow(),ok=score/10,bad=G.qs.length-ok,stars=score>=80?3:score>=50?2:1,m=medalOf(score);
+  const msg=score===100?'เต็มร้อย! คุณคือจอมยุทธ์แห่งอาณาจักรสามมิติ 🎉':score>=80?'เก่งมาก! เกือบเต็มแล้ว ไปต่ออีกนิดเดียว 🌟':score>=50?'ทำได้ดีเลย! ลองทบทวนข้อที่พลาดแล้วเล่นอีกครั้งนะ 💪':'ขอบคุณที่ผจญภัยจนจบ! ทุกครั้งที่เล่นจะเก่งขึ้น ลองดูสูตรแล้วกลับมาสู้ใหม่นะ 🌈';
+  const next=G.li<2?G.li+1:null;
+  screen.innerHTML=`
+  <div class="card sum">
+    ${mascot(L.m,'happy')}
+    <h2>จบด่าน: ${L.name}</h2>
+    <div class="stars">${'⭐'.repeat(stars).split('').map(s=>`<span>${s}</span>`).join('')}${'<span style="opacity:.25;filter:grayscale(1)">⭐</span>'.repeat(3-stars)}</div>
+    <div class="score">${score}<span style="font-size:1.6rem">/100</span></div>
+    <div style="font-size:1.4rem;font-weight:800">${m[0]} ${m[1]}</div>
+    <div class="stat"><div class="g">ถูก ${ok} ข้อ</div><div class="r">ผิด ${bad} ข้อ</div><div>${BEST[G.li]!==null&&BEST[G.li]===score?'🏅 คะแนนสูงสุดของด่านนี้':'คะแนนสูงสุด '+BEST[G.li]}</div></div>
+    <p><b>${msg}</b></p>
+    <div class="row">
+      <button class="btn pink" data-act="replay">🔁 เล่นด่านนี้ซ้ำ (โจทย์ชุดใหม่)</button>
+      ${next!==null?`<button class="btn sky" data-act="start" data-i="${next}">ไปด่านถัดไป ➜</button>`:''}
+      <button class="btn" data-act="home">🗺️ เลือกด่าน</button>
+      <button class="btn yellow" data-act="formulas">📖 ดูสูตร</button>
+      <button class="btn ghost" data-act="resetall">🔄 เริ่มเกมใหม่</button>
+    </div>
+    <div class="rv"><h3 style="text-align:center;margin-bottom:6px">เฉลยทุกข้อ</h3>
+    ${G.qs.map((q,i)=>{const r=G.res[i];return `<details><summary>${r.ok?'<span class="ok">✔</span>':'<span class="no">✘</span>'} ข้อ ${i+1} • ระดับ${DIFF[q.diff][0]} • คำตอบที่ถูก: <b>${fmt(q.ans)} ${q.unit}</b></summary>
+      <p>${q.text}</p>
+      <p>คำตอบของคุณ: <b>${fmt(q.opts[r.sel].v)} ${q.unit}</b> ${r.ok?'(ถูกต้อง)':'(ยังไม่ถูก)'}</p>
+      <ol>${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol></details>`;}).join('')}
+    </div>
+  </div>`;
+}
+function render(){
+  if(G.view==='home')renderHome();else if(G.view==='quiz')renderQuiz();else renderSummary();
+}
+
+/* ---------- ป๊อปอัป ---------- */
+function openModal(html){mbox.innerHTML=html+`<div class="row" style="margin-top:14px"><button class="btn" data-act="close">ปิด</button></div>`;modal.classList.remove('hidden');}
+function formulasHTML(){return `<h3>📖 สูตรสำคัญ</h3>
+ <h4>🔺 พีระมิด</h4>
+ <div class="f">ปริมาตร V = ⅓ × พื้นที่ฐาน × ความสูงตั้งฉาก (h)</div>
+ <div class="f">พื้นที่ผิวทั้งหมด = พื้นที่ฐาน + พื้นที่หน้าข้างทุกหน้า</div>
+ <div class="f">ฐานจัตุรัสด้าน a: หน้าข้าง 4 หน้า = 4 × ½ × a × ℓ = 2aℓ</div>
+ <div class="f">ความสูงเอียง ℓ² = h² + (a/2)²</div>
+ <h4>🍦 กรวย</h4>
+ <div class="f">ปริมาตร V = ⅓πr²h</div>
+ <div class="f">พื้นที่ผิวทั้งหมด = πr² + πrℓ (ผิวข้างอย่างเดียว = πrℓ)</div>
+ <div class="f">เส้นสูงเอียง ℓ² = r² + h²</div>
+ <h4>🔮 ทรงกลม</h4>
+ <div class="f">ปริมาตร V = ⁴⁄₃πr³</div>
+ <div class="f">พื้นที่ผิว = 4πr²</div>
+ <div class="f">ครึ่งทรงกลม: V = ⅔πr³ และพื้นที่ผิวทั้งหมด (รวมฐาน) = 2πr² + πr² = 3πr²</div>
+ <h4>📝 ข้อตกลงในเกม</h4>
+ <div class="f">π ≈ 3.14 • เส้นผ่านศูนย์กลาง d = 2r • 1 ลิตร = 1,000 ลบ.ซม.</div>
+ <div class="f">คำนวณด้วยค่าเต็มก่อน แล้วปัดเศษคำตอบสุดท้ายเป็นทศนิยม 2 ตำแหน่ง</div>`;}
+function howtoHTML(){return `<h3>❓ วิธีเล่น</h3>
+ <ol><li>เลือกด่านที่ต้องการ แต่ละด่านมี 10 ข้อ (ง่าย 3 • ปานกลาง 4 • ยาก 3)</li>
+ <li>อ่านโจทย์และดูภาพประกอบ แล้วแตะเลือก 1 ตัวเลือก</li>
+ <li>กด “ตรวจคำตอบ” เพื่อดูผลทันที พร้อมวิธีทำทีละขั้นตอน</li>
+ <li>ตอบถูกได้ข้อละ 10 คะแนน เต็มด่านละ 100 คะแนน และรับดาว เหรียญ</li>
+ <li>เล่นซ้ำได้ไม่จำกัด โจทย์และตัวเลขจะเปลี่ยนใหม่ทุกครั้ง</li></ol>
+ <p class="tiny">ทางลัดคีย์บอร์ด: กด 1–4 เพื่อเลือกตัวเลือก และ Enter เพื่อตรวจคำตอบ/ไปข้อถัดไป</p>`;}
+
+/* ---------- การทำงาน ---------- */
+function startLevel(li){
+  G.li=li;G.qs=makeQuiz(li);G.i=0;G.sel=null;G.checked=false;G.res=[];G.view='quiz';render();window.scrollTo(0,0);
+}
+function doPick(i){if(G.checked||G.view!=='quiz')return;G.sel=i;
+  document.querySelectorAll('.opt').forEach((b,k)=>b.classList.toggle('sel',k===i));
+  const c=$('#chk');if(c)c.disabled=false;}
+function doCheck(){
+  if(G.checked||G.sel===null)return;
+  const q=G.qs[G.i],ok=q.opts[G.sel].correct;
+  G.res[G.i]={sel:G.sel,ok,msg:ok?pick(GOOD):pick(SOFT)};
+  G.checked=true;renderQuiz();
+  const fb=$('#fb');if(fb)fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function doNext(){
+  if(!G.checked)return;
+  if(G.i<G.qs.length-1){G.i++;G.sel=null;G.checked=false;renderQuiz();window.scrollTo(0,0);}
+  else{
+    const s=scoreNow();if(BEST[G.li]===null||s>BEST[G.li])BEST[G.li]=s;saveBest();
+    G.view='summary';render();window.scrollTo(0,0);
+  }
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');
+  if(!t){if(e.target===modal)modal.classList.add('hidden');return;}
+  const a=t.dataset.act,i=+t.dataset.i;
+  if(a==='start')startLevel(i);
+  else if(a==='pick')doPick(i);
+  else if(a==='check')doCheck();
+  else if(a==='next')doNext();
+  else if(a==='home'){G.view='home';render();window.scrollTo(0,0);}
+  else if(a==='replay')startLevel(G.li);
+  else if(a==='restart'){if(G.view!=='quiz'||confirm('เริ่มด่านนี้ใหม่ด้วยโจทย์ชุดใหม่ใช่ไหม? คะแนนที่ทำไว้ในรอบนี้จะหายไปนะ'))startLevel(G.li);}
+  else if(a==='resetall'){if(confirm('เริ่มเกมใหม่ทั้งหมด? คะแนนสูงสุดทุกด่านจะถูกล้าง')){BEST=[null,null,null];saveBest();G.view='home';render();window.scrollTo(0,0);}}
+  else if(a==='formulas')openModal(formulasHTML());
+  else if(a==='howto')openModal(howtoHTML());
+  else if(a==='close')modal.classList.add('hidden');
+});
+document.addEventListener('keydown',e=>{
+  if(!modal.classList.contains('hidden')){if(e.key==='Escape')modal.classList.add('hidden');return;}
+  if(G.view!=='quiz')return;
+  if(e.key>='1'&&e.key<='4')doPick(+e.key-1);
+  else if(e.key==='Enter'){if(G.checked)doNext();else doCheck();}
+});
+window.__MGA={G,startLevel,doPick,doCheck,doNext,render};
+render();
+})();
+}
+</script>
+</body>
+</html>
